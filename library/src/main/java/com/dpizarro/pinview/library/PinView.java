@@ -104,7 +104,7 @@ public class PinView extends PinViewBaseHelper {
 
         for (int i = 0; i < numberPinBoxes; i++) {
             mLinearLayoutPinBoxes.addView(generatePinBox(i, inputType), index);
-            if (mSplit != null && !mSplit.isEmpty() && i < numberPinBoxes - 1) {
+            if (mSplit != null && !mSplit.isEmpty() && i == ((numberPinBoxes / 2) - 1)) {
                 mLinearLayoutPinBoxes.addView(generateSplit(i), index + 1);
                 mLinearLayoutPinBoxes.setGravity(Gravity.CENTER_VERTICAL);
                 index += 2;
