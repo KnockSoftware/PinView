@@ -169,14 +169,14 @@ abstract class PinViewBaseHelper extends LinearLayout implements TextWatcher, Vi
 
 
     /**
-     * Generate a PinBox {@link EditText} with all attributes to add to {@link PinView}
+     * Generate a PinBox {@link PinViewEditText} with all attributes to add to {@link PinView}
      *
      * @param i index of new PinBox
      * @param inputType inputType to new PinBox
      * @return new PinBox
      */
-    EditText generatePinBox(int i, int inputType) {
-        EditText editText = (EditText) LayoutInflater.from(getContext()).inflate(R.layout.partial_pin_box, this, false);
+    PinViewEditText generatePinBox(int i, int inputType) {
+        PinViewEditText editText = (PinViewEditText) LayoutInflater.from(getContext()).inflate(R.layout.partial_pin_box, this, false);
         int generateViewId = PinViewUtils.generateViewId();
         editText.setId(generateViewId);
         editText.setTag(i);
@@ -197,7 +197,7 @@ abstract class PinViewBaseHelper extends LinearLayout implements TextWatcher, Vi
      *
      * @param editText to set attributes
      */
-    private void setStylePinBox(EditText editText) {
+    private void setStylePinBox(PinViewEditText editText) {
         editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(mNumberCharacters)});
 
         if (mMaskPassword) {
@@ -210,9 +210,9 @@ abstract class PinViewBaseHelper extends LinearLayout implements TextWatcher, Vi
         if (mNativePinBox) {
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
                 //noinspection deprecation
-                editText.setBackgroundDrawable(new EditText(getContext()).getBackground());
+                editText.setBackgroundDrawable(new PinViewEditText(getContext()).getBackground());
             } else {
-                editText.setBackground(new EditText(getContext()).getBackground());
+                editText.setBackground(new PinViewEditText(getContext()).getBackground());
             }
         } else {
             editText.setBackgroundResource(mCustomDrawablePinBox);
@@ -327,7 +327,7 @@ abstract class PinViewBaseHelper extends LinearLayout implements TextWatcher, Vi
     }
 
     /**
-     * Set the focus on an empty PinBox {@link EditText}
+     * Set the focus on an empty PinBox {@link PinViewEditText}
      *
      * @param index PinBox Position
      */
@@ -335,8 +335,8 @@ abstract class PinViewBaseHelper extends LinearLayout implements TextWatcher, Vi
         findViewById(pinBoxesIds[index]).requestFocus();
     }
 
-    EditText getPinBox(int i) {
-        return (EditText) findViewById(pinBoxesIds[i]);
+    PinViewEditText getPinBox(int i) {
+        return (PinViewEditText) findViewById(pinBoxesIds[i]);
     }
 
     private TextView getPinTitle(int i) {
@@ -348,7 +348,7 @@ abstract class PinViewBaseHelper extends LinearLayout implements TextWatcher, Vi
     }
 
     /**
-     * Check for an empty PinBox {@link EditText} from the current PinBox.
+     * Check for an empty PinBox {@link PinViewEditText} from the current PinBox.
      * Set focus in the next empty PinBox or notify that {@link PinView} is completed.
      */
     private void checkPinBoxesAvailable() {
@@ -391,7 +391,7 @@ abstract class PinViewBaseHelper extends LinearLayout implements TextWatcher, Vi
     }
 
     /**
-     * Check for an empty PinBox {@link EditText} from the first.
+     * Check for an empty PinBox {@link PinViewEditText} from the first.
      * Set focus in the first empty PinBox or notify that {@link PinView} is completed.
      */
     void checkPinBoxesAvailableOrder() {
@@ -407,7 +407,7 @@ abstract class PinViewBaseHelper extends LinearLayout implements TextWatcher, Vi
     }
 
     /**
-     * Check if a determinate PinBox {@link EditText} is empty.
+     * Check if a determinate PinBox {@link PinViewEditText} is empty.
      *
      * @param i PinBox position to check
      * @return State of PinBox
@@ -418,7 +418,7 @@ abstract class PinViewBaseHelper extends LinearLayout implements TextWatcher, Vi
 
     /**
      * Check if you have written or have deleted (in the latter case, there would be to do nothing).
-     * If you have written, you have to move to the following free PinBox {@link EditText} or to do other
+     * If you have written, you have to move to the following free PinBox {@link PinViewEditText} or to do other
      * action if there are no empty values.
      */
     @Override
@@ -428,7 +428,12 @@ abstract class PinViewBaseHelper extends LinearLayout implements TextWatcher, Vi
             currentFocus = Integer.parseInt(findFocus().getTag().toString());
         }
 
-        if (count == 1 && s.length() == mNumberCharacters) {
+        if (count == 0 && s.length() == 0 && before == 0) {
+            if (currentFocus > 0) {
+                PinViewEditText view = (PinViewEditText) findViewById(pinBoxesIds[currentFocus - 1]);
+                view.requestFocus();
+            }
+        } else if (count == 1 && s.length() == mNumberCharacters) {
             if (currentFocus == (mNumberPinBoxes - 1) || currentFocus == 0) {
                 checkPinBoxesAvailableOrder();
             } else {
