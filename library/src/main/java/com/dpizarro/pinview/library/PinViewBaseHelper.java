@@ -432,6 +432,7 @@ abstract class PinViewBaseHelper extends LinearLayout implements TextWatcher, Vi
             if (currentFocus > 0) {
                 PinViewEditText view = (PinViewEditText) findViewById(pinBoxesIds[currentFocus - 1]);
                 view.requestFocus();
+                view.setText("");
             }
         } else if (count == 1 && s.length() == mNumberCharacters) {
             if (currentFocus == (mNumberPinBoxes - 1) || currentFocus == 0) {
